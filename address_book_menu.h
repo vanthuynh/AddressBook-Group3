@@ -6,7 +6,6 @@
 #define	NONE							0
 #define	NUM								1
 #define	CHAR							2
-
 #define WINDOW_SIZE						5
 
 void menu_header(const char *str);
