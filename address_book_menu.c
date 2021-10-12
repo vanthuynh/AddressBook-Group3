@@ -9,16 +9,60 @@
 #include "address_book_menu.h"
 #include "address_book.h"
 
+
+/* clean the input buffer */
+void clean_stdin()
+{    
+  while ( getchar() != '\n' );
+}
+int getUserInt(const char *prompt)
+{
+	int userInput;
+    while(1)
+    {
+        printf("%s",prompt);
+        scanf("%d",&userInput);
+        if(userInput >= 0)  return userInput;
+        printf("*Note: No negative number please...\n");
+        clean_stdin();
+    }
+}
+int getBoundedInt(const char *prompt, int lowBound, int highBound)
+{
+	int userInput;
+    while(1)
+    {
+        userInput = getUserInt(prompt);
+        if (lowBound <= userInput && userInput <= highBound)
+            break;
+        printf("Please enter a value in the range [%d..%d]\n",lowBound,highBound);
+        clean_stdin();
+    }
+    return userInput;
+}
 int get_option(int type, const char *msg)
 {
-	/*
-	 * Mutilfuction user intractions like
-	 * Just an enter key detection
-	 * Read an number
-	 * Read a charcter
-	 */ 
-
-	/* Fill the code to add above functionality */
+	if(type == NUM) {
+		int userInput = getBoundedInt(msg,0,6);
+		return userInput;
+	}
+	else if (type == CHAR) {
+		do
+		{
+			char userInput;
+			printf("%s",msg);
+			fflush(stdout);
+			scanf("%c", userInput);
+			clean_stdin();
+			switch(userInput)
+			{
+				case 'n': case 'N':	return 'N';
+				case 'y': case 'Y':	return 'Y';
+			}
+			printf("Please select Y or N\n");
+		} while (1);
+	}
+	return NONE;
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -63,7 +107,7 @@ void menu_header(const char *str)
 	system("clear");
 
 	printf("#######  Address Book  #######\n");
-	if (str != '\0')
+	if (*str != '\0')
 	{
 		printf("#######  %s\n", str);
 	}
