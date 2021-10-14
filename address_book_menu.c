@@ -184,8 +184,7 @@ Status menu(AddressBook *address_book)
 Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
-	int user_opt, temp_phone;
-
+	int user_opt;	
 	ContactInfo newPerson;	//Declare temp new contact
 
 	menu_header("Add Contact:\n"); //Display header for "Add Contact"
@@ -203,32 +202,37 @@ Status add_contacts(AddressBook *address_book)
 
 		switch (user_opt)
 		{
-		case 0:
-			break;	//exit
-		case 1:
-			printf("Enter the name: ");
-			scanf("%c", newPerson.name);
-		case 2:
-			temp_phone = getUserInt("Enter Phone Number 1: [Please renter the same option of alternate Phone Number]: ");
-			strcpy(newPerson.phone_numbers[0], temp_phone);
-		case 3:
-			printf("Enter Email ID 1: [Please renter the same option of alternate Email ID]: ");
-			scanf("%c", newPerson.email_addresses[0]);
+			case 0:
+				break;	//exit
+			case 1:
+				printf("Enter the name: ");
+				scanf("%s", newPerson.name[0]);
+				break;
+			case 2:
+				printf("Enter Phone Number 1: [Please renter the same option of alternate Phone Number]: ");
+				scanf("%s", newPerson.phone_numbers[0]);
+				break;
+			case 3: 
+				printf("Enter Email ID 1: [Please renter the same option of alternate Email ID]: ");
+				scanf("%s", newPerson.email_addresses[0]);
+				break;
 		}
-
+		
 		/* Display option menu with new added info */
 		menu_header("Add Contact:\n");
 
 		printf("0. Exit\n");
-		printf("1. Name       : %s\n", newPerson.name);
-		printf("2. Phone No 1 : %s\n", newPerson.phone_numbers[0]);
+		printf("1. Name       : %s\n", newPerson.name[0]);
+		printf("2. Phone No 1 : %s\n", newPerson.phone_numbers[0]); 
 		printf("3. Email ID 1 : %s\n", newPerson.email_addresses[0]);
 
 	} while (user_opt != 0);
 
-	address_book->count += 1;	//another contact added, increment address book size and update latest contact in list
-	address_book->list[address_book->count] = newPerson;
-	return e_success;
+	address_book->count += 1;	//another contact added, increment address book size
+	newPerson.si_no = address_book->count;
+
+	address_book->list[address_book->count] = newPerson;	//update latest contact in list
+	
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
