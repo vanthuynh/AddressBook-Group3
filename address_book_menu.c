@@ -18,7 +18,6 @@ void clean_stdin()
 int getUserInt(const char *prompt)
 {
 	int userInput;
-<<<<<<< HEAD
     while(1)
     {
         printf("%s",prompt);
@@ -27,23 +26,11 @@ int getUserInt(const char *prompt)
         printf("*Note: Please only enter positive number: ");
         clean_stdin();
     }
-=======
-	while (1)
-	{
-		printf("%s", prompt);
-		scanf("%d", &userInput);
-		if (userInput >= 0)
-			return userInput;
-		printf("*Note: No negative number please...\n");
-		clean_stdin();
-	}
->>>>>>> master
 }
 
 int getBoundedInt(const char *prompt, int lowBound, int highBound)
 {
 	int userInput;
-<<<<<<< HEAD
     while(1)
     {
         userInput = getUserInt(prompt);
@@ -53,17 +40,6 @@ int getBoundedInt(const char *prompt, int lowBound, int highBound)
         clean_stdin();
     }
     return userInput;
-=======
-	while (1)
-	{
-		userInput = getUserInt(prompt);
-		if (lowBound <= userInput && userInput <= highBound)
-			break;
-		printf("Please enter a value in the range [%d..%d]\n", lowBound, highBound);
-		clean_stdin();
-	}
-	return userInput;
->>>>>>> master
 }
 
 int get_option(int type, const char *msg)
@@ -77,20 +53,11 @@ int get_option(int type, const char *msg)
 	{
 		do
 		{
-<<<<<<< HEAD
 			clean_stdin();
 			char charInput;
 			printf("%s", msg);
 			scanf_s("%c", &charInput, 1);
 			switch(charInput)
-=======
-			char userInput;
-			printf("%s", msg);
-			fflush(stdout);
-			scanf("%c", userInput);
-			clean_stdin();
-			switch (userInput)
->>>>>>> master
 			{
 			case 'n':case 'N':return 'N';
 			case 'y':case 'Y':return 'Y';
