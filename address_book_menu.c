@@ -9,15 +9,16 @@
 #include "address_book_menu.h"
 #include "address_book.h"
 
-
 /* clean the input buffer */
 void clean_stdin()
-{    
-  while ( getchar() != '\n' );
+{
+	while (getchar() != '\n');
 }
+
 int getUserInt(const char *prompt)
 {
 	int userInput;
+<<<<<<< HEAD
     while(1)
     {
         printf("%s",prompt);
@@ -26,10 +27,23 @@ int getUserInt(const char *prompt)
         printf("*Note: Please only enter positive number: ");
         clean_stdin();
     }
+=======
+	while (1)
+	{
+		printf("%s", prompt);
+		scanf("%d", &userInput);
+		if (userInput >= 0)
+			return userInput;
+		printf("*Note: No negative number please...\n");
+		clean_stdin();
+	}
+>>>>>>> master
 }
+
 int getBoundedInt(const char *prompt, int lowBound, int highBound)
 {
 	int userInput;
+<<<<<<< HEAD
     while(1)
     {
         userInput = getUserInt(prompt);
@@ -39,24 +53,47 @@ int getBoundedInt(const char *prompt, int lowBound, int highBound)
         clean_stdin();
     }
     return userInput;
+=======
+	while (1)
+	{
+		userInput = getUserInt(prompt);
+		if (lowBound <= userInput && userInput <= highBound)
+			break;
+		printf("Please enter a value in the range [%d..%d]\n", lowBound, highBound);
+		clean_stdin();
+	}
+	return userInput;
+>>>>>>> master
 }
+
 int get_option(int type, const char *msg)
 {
-	if(type == NUM) {
-		int userInput = getBoundedInt(msg,0,6);
+	if (type == NUM)
+	{
+		int userInput = getBoundedInt(msg, 0, 6);
 		return userInput;
 	}
-	else if (type == CHAR) {
+	else if (type == CHAR)
+	{
 		do
 		{
+<<<<<<< HEAD
 			clean_stdin();
 			char charInput;
 			printf("%s", msg);
 			scanf_s("%c", &charInput, 1);
 			switch(charInput)
+=======
+			char userInput;
+			printf("%s", msg);
+			fflush(stdout);
+			scanf("%c", userInput);
+			clean_stdin();
+			switch (userInput)
+>>>>>>> master
 			{
-				case 'n': case 'N':	return 'N';
-				case 'y': case 'Y':	return 'Y';
+			case 'n':case 'N':return 'N';
+			case 'y':case 'Y':return 'Y';
 			}
 			printf("Please select Y or N\n");
 			fflush(stdout);
@@ -95,7 +132,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 	 * Add code to list all the contacts availabe in address_book.csv file
 	 * Should be menu based
 	 * The menu provide navigation option if the entries increase the page size
-	 */ 
+	 */
 
 	return e_success;
 }
@@ -140,7 +177,7 @@ Status menu(AddressBook *address_book)
 
 		option = get_option(NUM, "");
 
-		if ((address_book-> count == 0) && (option != e_add_contact))
+		if ((address_book->count == 0) && (option != e_add_contact))
 		{
 			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts");
 
@@ -149,26 +186,27 @@ Status menu(AddressBook *address_book)
 
 		switch (option)
 		{
-			case e_add_contact:
-				/* Add your implementation to call add_contacts function here */
-				break;
-			case e_search_contact:
-				search_contact(address_book);
-				break;
-			case e_edit_contact:
-				edit_contact(address_book);
-				break;
-			case e_delete_contact:
-				delete_contact(address_book);
-				break;
-			case e_list_contacts:
-				break;
-				/* Add your implementation to call list_contacts function here */
-			case e_save:
-				save_file(address_book);
-				break;
-			case e_exit:
-				break;
+		case e_add_contact:
+			/* Add your implementation to call add_contacts function here */
+			add_contacts(address_book);
+			break;
+		case e_search_contact:
+			search_contact(address_book);
+			break;
+		case e_edit_contact:
+			edit_contact(address_book);
+			break;
+		case e_delete_contact:
+			delete_contact(address_book);
+			break;
+		case e_list_contacts:
+			break;
+			/* Add your implementation to call list_contacts function here */
+		case e_save:
+			save_file(address_book);
+			break;
+		case e_exit:
+			break;
 		}
 	} while (option != e_exit);
 
@@ -178,6 +216,55 @@ Status menu(AddressBook *address_book)
 Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
+	int user_opt;	
+	ContactInfo newPerson;	//Declare temp new contact
+
+	menu_header("Add Contact:\n"); //Display header for "Add Contact"
+
+	//Display options user can add to
+	printf("0. Exit\n");
+	printf("1. Name       :\n");
+	printf("2. Phone No 1 :\n");
+	printf("3. Email ID 1 :\n");
+
+	
+	do
+	{
+		user_opt = getBoundedInt("Please select an option: ", 0, 3);
+
+		switch (user_opt)
+		{
+			case 0:
+				break;	//exit
+			case 1:
+				printf("Enter the name: ");
+				scanf("%s", newPerson.name[0]);
+				break;
+			case 2:
+				printf("Enter Phone Number 1: [Please renter the same option of alternate Phone Number]: ");
+				scanf("%s", newPerson.phone_numbers[0]);
+				break;
+			case 3: 
+				printf("Enter Email ID 1: [Please renter the same option of alternate Email ID]: ");
+				scanf("%s", newPerson.email_addresses[0]);
+				break;
+		}
+		
+		/* Display option menu with new added info */
+		menu_header("Add Contact:\n");
+
+		printf("0. Exit\n");
+		printf("1. Name       : %s\n", newPerson.name[0]);
+		printf("2. Phone No 1 : %s\n", newPerson.phone_numbers[0]); 
+		printf("3. Email ID 1 : %s\n", newPerson.email_addresses[0]);
+
+	} while (user_opt != 0);
+
+	address_book->count += 1;	//another contact added, increment address book size
+	newPerson.si_no = address_book->count;
+
+	address_book->list[address_book->count] = newPerson;	//update latest contact in list
+	
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
