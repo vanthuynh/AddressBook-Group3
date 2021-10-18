@@ -15,7 +15,7 @@ Status load_file(AddressBook *address_book)
 	/* 
 	 * Check for file existance
 	 */
-
+	printf("this is me testing something");
 	if (ret == 0)
 	{
 		/* 
