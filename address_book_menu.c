@@ -108,7 +108,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("clear");
+	//system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -143,7 +143,6 @@ Status menu(AddressBook *address_book)
 		main_menu();
 
 		option = get_option(NUM, "");
-
 		if ((address_book->count == 0) && (option != e_add_contact))
 		{
 			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts");
@@ -231,6 +230,7 @@ Status add_contacts(AddressBook *address_book)
 	newPerson.si_no = address_book->count;
 
 	address_book->list[address_book->count] = newPerson;	//update latest contact in list
+
 	
 }
 
