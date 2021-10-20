@@ -278,6 +278,21 @@ Status add_contacts(AddressBook *address_book)
 	printf("e-mail: %s\n", address_book->list[tempIndex]->email_addresses[0]);
 	*/
 
+	//add new person to file
+
+	fprintf(address_book->fp, "%s", newPerson.name);
+	fprintf(address_book->fp, "%c", FIELD_DELIMITER);
+
+	fprintf(address_book->fp, "%s", newPerson.phone_numbers[0]);
+	fprintf(address_book->fp, "%c", FIELD_DELIMITER);
+
+	fprintf(address_book->fp, "%s", newPerson.email_addresses[0]);
+	fprintf(address_book->fp, "%c", FIELD_DELIMITER);
+
+	fprintf(address_book->fp, "%c", NEXT_ENTRY);
+
+	printf("\nSuccessfully updated file!\n");
+
 	return e_success;
 }
 
