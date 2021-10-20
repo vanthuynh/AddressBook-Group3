@@ -200,16 +200,23 @@ Status add_contacts(AddressBook *address_book)
 
 	address_book->count = 0; //temporary assignment to check code works
 	tempIndex = address_book->count;
+
+	if (tempIndex >= LIST_MAX) //address book has reached contact capacity, notify user and exit
+	{
+		printf("\nReached capacity of address book!\n\n");
+		return e_success;
+	}
+
 	tempIndex++; //another contact added, increment address book size
 	newPerson.si_no = tempIndex;
 
 	//Implement dynamic sizing for list
-	ContactInfo *newList = (ContactInfo *)malloc(tempIndex * sizeof(ContactInfo));
+	//ContactInfo *newList = (ContactInfo *)malloc(tempIndex * sizeof(ContactInfo));
 
 	//copy over previous list to newList
 	//	newList[0] = address_book->list[0];		//hard code test - quits program
 
-/*
+	/*
 	for (int index = 0; index < tempIndex; index++)
 	{
 		newList[index].name[0] = address_book->list[index].name[0];		//also quits program		
@@ -259,17 +266,16 @@ Status add_contacts(AddressBook *address_book)
 
 	} while (user_opt != e_exit);
 
-	address_book->list = &newPerson; //update latest contact in list
+	address_book->list[tempIndex] = &newPerson; //update latest contact in list
 	//address_book->list[tempIndex] = newPerson; 	//what it should be after malloc works
 
 	/*
-
-	for debug purposes
+	//for debug purposes
 
 	//check that each one was updated
-	printf("name: %s\n", address_book->list->name[0]);
-	printf("phone number: %s\n", address_book->list->phone_numbers[0]);
-	printf("e-mail: %s\n", address_book->list->email_addresses[0]);
+	printf("\nUser inputted:\nname: %s\n", address_book->list[tempIndex]->name[0]);
+	printf("phone number: %s\n", address_book->list[tempIndex]->phone_numbers[0]);
+	printf("e-mail: %s\n", address_book->list[tempIndex]->email_addresses[0]);
 	*/
 
 	return e_success;
