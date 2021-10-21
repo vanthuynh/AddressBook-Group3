@@ -44,7 +44,7 @@ int get_option(int type, const char* msg)
 {
 	if (type == NUM)
 	{
-		int userInput = getBoundedInt(msg, 0, 6);
+		int userInput = getBoundedInt(msg, NONE, MAX_DEFAULT_MENU_CHOICE);
 		return userInput;
 	}
 	else if (type == CHAR)
@@ -66,7 +66,6 @@ int get_option(int type, const char* msg)
 	}
 	return NONE;
 }
-
 char getChar(const char* prompt)
 {
 	char charInput;
@@ -106,31 +105,53 @@ Status save_prompt(AddressBook* address_book)
 	return e_success;
 }
 
+void output_header()
+{
+	printf("============================================================================================================\n");
+	// printf("%0*d\n", 80, 0);
+	printf(": %*s : %*s : %*s : %*s\n", -5, "S. No", -35, "Name", -35, "Phone No", -35, "Email Id");
+	printf("============================================================================================================\n");
+	fflush(stdout);
+}
 Status list_contacts(AddressBook* address_book, const char* title, int* index, const char* msg, Modes mode)
 {
-	/*
-	 * Add code to list all the contacts availabe in address_book.csv file
-	 * Should be menu based
-	 * The menu provide navigation option if the entries increase the page size
-	 */
 	int counter = 0;
 	char option;
 	do
 	{
 		menu_header(title);
-		printf("============================================================================================================\n");
-		// printf("%0*d\n", 80, 0);
-		// printf(": S. No : Name                            : Phone No                        : Email ID                     :\n");
-		printf(": %*s : %*s : %*s : %*s\n", -2, "S. No", -40, "Name", -40, "Phone No", -40, "Email Id");
-		printf("============================================================================================================\n");
+		output_header();
+		//print each section spaced out correctly
 		for (int i = 0; i < mode; i++)
 		{
-			//print each section spaced out correctly
-			printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[counter].si_no, -40, address_book->list[counter].name[0], -40, address_book->list[counter].phone_numbers[0], -40, address_book->list[counter].email_addresses[0]);
+			printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[counter].si_no
+											, -35, address_book->list[counter].name[0]
+											, -35, address_book->list[counter].phone_numbers[0]
+											, -35, address_book->list[counter].email_addresses[0]);
 			counter++;
 		}
 		printf("============================================================================================================\n");
-		option = getChar(msg);
+		while(1)
+		{
+			option = getChar(msg);
+			switch (option)
+			{
+				case 'q': case 'Q': break;
+				case 'p':
+					if (counter - 10 >= 0) {
+						counter -= 10;
+						break;
+					}
+				case 'n': case 'N': 
+					if (counter == address_book->count) {
+						printf("%s", "No more contact to show...\n");
+						continue;
+					}
+					break;
+				default: continue;
+			}
+			break;
+		}
 	} while (toupper(option) != 'Q' && counter <= address_book->count);
 	return e_success;
 }
@@ -206,7 +227,7 @@ Status menu(AddressBook* address_book)
 			delete_contact(address_book);
 			break;
 		case e_list_contacts:
-			list_contacts(address_book, "Search Result:\n", 0, "Press [q]-Cancel | [n]-Next Page | [p]-Previous Page: ", e_list);
+			list_contacts(address_book, "Search Result:\n", 0, "Press [q]-Cancel | [n]-Next Page | [p]-Previous Page: ", WINDOW_SIZE);
 			break;
 			/* Add your implementation to call list_contacts function here */
 		case e_save:
@@ -268,7 +289,7 @@ Status add_contacts(AddressBook* address_book)
 	} while (user_opt != 0);
 	printf("THIS IS THE CURRENT COUNT: %d", address_book->count);
 
-	newPerson.si_no = address_book->count;
+	newPerson.si_no = address_book->count+1;
 
 	address_book->list[address_book->count] = newPerson;	//update latest contact in list
 	address_book->count += 1;	//another contact added, increment address book size

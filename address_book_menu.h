@@ -7,21 +7,23 @@
 #define	NUM								1
 #define	CHAR							2
 #define WINDOW_SIZE						5
+#define MAX_DEFAULT_MENU_CHOICE         6
 
 /* Additional helper methods */
 void clean_stdin();
-int getUserInt(const char *prompt);
-int getBoundedInt(const char *prompt, int lowBound, int highBound);
-char getChar(const char *prompt);
+int getUserInt(const char* prompt);
+int getBoundedInt(const char* prompt, int lowBound, int highBound);
+char getChar(const char* prompt);
+void output_header();
 
-void menu_header(const char *str);
+void menu_header(const char* str);
 void main_menu(void);
-Status menu(AddressBook *address_book);
-Status save_prompt(AddressBook *address_book);
-Status add_contacts(AddressBook *address_book);
-Status search_contact(AddressBook *address_book);
-Status edit_contact(AddressBook *address_book);
-Status delete_contact(AddressBook *address_book);
-Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode);
+Status menu(AddressBook* address_book);
+Status save_prompt(AddressBook* address_book);
+Status add_contacts(AddressBook* address_book);
+Status search_contact(AddressBook* address_book);
+Status edit_contact(AddressBook* address_book);
+Status delete_contact(AddressBook* address_book);
+Status list_contacts(AddressBook* address_book, const char* title, int* index, const char* msg, Modes mode);
 
 #endif
