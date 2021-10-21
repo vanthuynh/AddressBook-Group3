@@ -67,6 +67,8 @@ Status load_file(AddressBook *address_book)
 			token = strtok(line, ",");
 			ContactInfo newPerson;
 			while(token != NULL){
+				newPerson.si_no = atoi(token);
+				token = strtok(NULL, ",");
 				strcpy(newPerson.name[0], token);
 				token = strtok(NULL, ",");
 				strcpy(newPerson.phone_numbers[0], token);
