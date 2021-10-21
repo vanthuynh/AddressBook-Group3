@@ -17,6 +17,9 @@
 /* Maximum number of email addresses per contact */
 #define EMAIL_ID_COUNT				5
 
+/* Maximum number of contacts for list */
+//#define LIST_MAX		100
+
 #define FIELD_DELIMITER				','
 #define NEXT_ENTRY					'\n'
 

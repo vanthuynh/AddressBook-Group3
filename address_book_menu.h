@@ -8,10 +8,13 @@
 #define	CHAR							2
 #define WINDOW_SIZE						5
 
+
+
 /* Additional helper methods */
 void clean_stdin();
 int getUserInt(const char *prompt);
 int getBoundedInt(const char *prompt, int lowBound, int highBound);
+char getChar(const char *prompt);
 
 void menu_header(const char *str);
 void main_menu(void);
