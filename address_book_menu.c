@@ -546,6 +546,7 @@ Status delete_contact(AddressBook *address_book)
 	//char input[32];
 	int user_opt;
 
+	//change deleperson into general input?
 	ContactInfo deletePerson; //Declare temp new contact
 	ContactInfo emptyPerson;
 
@@ -582,87 +583,70 @@ Status delete_contact(AddressBook *address_book)
 		return e_back;
 	case 1:
 		printf("Enter the Name: ");
-		scanf("%s", deletePerson.name); //take in user search parameter
+		scanf("%s", deletePerson.name[0]); //take in user search parameter
 
-
-/*
-
-//DOES NOT DISPLAY FOUND RESULTS AND ASK FOR USER VERIFICATION
-		for (int listIndex = 0; listIndex < address_book->count; listIndex++)
-		{
-			for (int currentNameIndex = 0; currentNameIndex < NAME_COUNT; currentNameIndex++)
-			{
-				if (strcmp(address_book->list[listIndex].name[currentNameIndex] , deletePerson.name) == 0)
-				{
-					address_book->list[listIndex] = emptyPerson;
-					break;
-					//address_book->count--;
-				}
-			}
-		}
-		printf("Contact not in address book.\n")
-		*/
+		if (search(deletePerson.name[0], address_book, address_book->count, 1, msg, e_delete) == e_success)
+			return search(deletePerson.name[0], address_book, address_book->count, 1, msg, e_delete);
 
 		break;
 	case 2:
 		printf("Enter Phone Number: ");
 		scanf("%s", deletePerson.phone_numbers[0]);
+
+		if (search(deletePerson.phone_numbers[0], address_book, address_book->count, 1, msg, e_delete) == e_success)
+			return search(deletePerson.phone_numbers[0], address_book, address_book->count, 1, msg, e_delete);
+
 		break;
 	case 3:
 		printf("Enter Email ID: ");
 		scanf("%s", deletePerson.email_addresses[0]);
+
+		if (search(deletePerson.email_addresses[0], address_book, address_book->count, 1, msg, e_delete) == e_success)
+			return search(deletePerson.email_addresses[0], address_book, address_book->count, 1, msg, e_delete);
 
 		break;
 	case 4:
 		printf("Enter Serial Number: ");
 		scanf("%d", deletePerson.si_no);
 
+		/*  search for serial number hasnt been added yet to search()
+
+		if (search(deletePerson.si_no, address_book, address_book->count, 1, msg, e_delete) == e_success)
+			return search(deletePerson.si_no, address_book, address_book->count, 1, msg, e_delete);
+*/
 		break;
 	}
 
-/*
-	if (search(input, address_book, address_book->count, user_opt, msg, e_delete) == e_success)
+	printf("Press: [s] = Select, [q] | Cancel: ");
+	scanf("%c", selection);
+
+	if (selection == 's')
 	{
-		menu_header("Search Result:\n");
+		int user_si_no;
+		printf("Select a Serial Number (S.No) to Delete: ");
+		scanf("%d", user_si_no);
 
-		//Display search results somehow
+		// assign deletePerson to corresponding serial number
+		deletePerson = address_book->list[user_si_no];
 
-		//also gain reference to each found search result
+		menu_header("Delete Contact:\n");
+		printf("0. Exit\n");
+		printf("1. Name       : %s\n", deletePerson.name[0]);
+		printf("2. Phone No 1 : %s\n", deletePerson.phone_numbers[0]);
+		printf("3. Email ID 1 : %s\n", deletePerson.email_addresses[0]);
 
-		printf("Press: [s] = Select, [q] | Cancel: ");
-		scanf("%c", selection);
+		printf("\nEnter 'Y' to delete. [Press any key to ignore]: ");
+		scanf("%c", valid);
 
-		if (selection == 's')
+		if (valid == 'Y')
 		{
-			int num;
-			printf("Select a Serial Number (S.No) to Delete: ");
-			scanf("%d", num);
+			address_book->list[user_si_no] = emptyPerson;
+			address_book->count--; //might not display last contact??
 
-			//assign deletePerson to corresponding serial number
+			//double check file and list were reassigned or mutated correctly
 		}
 
+		//if anyother key entered, DONT delete selected contact
 	}
-*/
-	//Display deletePerson for verification from user
-	menu_header("Delete Contact:\n");
-	printf("0. Exit\n");
-	printf("1. Name       : %s\n", deletePerson.name[0]);
-	printf("2. Phone No 1 : %s\n", deletePerson.phone_numbers[0]);
-	printf("3. Email ID 1 : %s\n", deletePerson.email_addresses[0]);
-
-	printf("\nEnter 'Y' to delete. [Press any key to ignore]: ");
-	scanf("%c", valid);
-
-	if (valid == 'Y')
-	{
-		//delete contact in address book file and list
-		//list[user selected si no] = NULL then shift all contacts to fill gap
-		//file - remove line and shift contacts to fill gap?
-
-		//double check file and list were reassigned or mutated correctly
-	}
-
-	//if anyother key entered, DONT delete selected contact
-
 	return e_success;
 }
