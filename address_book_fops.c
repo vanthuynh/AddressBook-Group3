@@ -45,16 +45,19 @@ Status load_file(AddressBook *address_book)
 			ContactInfo newPerson;
 			while(token != NULL){
 				strcpy(newPerson.name[0], token);
-				token = strtok(NULL, ",");
-				strcpy(newPerson.phone_numbers[0], token);
-				token = strtok(NULL, "\n");
-				strcpy(newPerson.email_addresses[0], token);
-				token = strtok(NULL, ",");
+				for(int i = 0; i < 5; i++){
+					token = strtok(NULL, ",");
+					strcpy(newPerson.phone_numbers[i], token);
+				}
+				for(int i = 0; i < ; i++){
+					token = strtok(NULL, ",");
+					strcpy(newPerson.email_addresses[i], token);
+				}
+            token = strtok(NULL, "\n");
 			}
 			newPerson.si_no = (x+1);
 			address_book->list[x] = newPerson;
 			x++;
-			//printf("THIS IS X: %d\n", x);
 		}
 		address_book->count = x;
 	}
@@ -81,11 +84,23 @@ Status save_file(AddressBook *address_book)
 	}
 
 	for(int i = 0; i < address_book->count; i++){
-		fprintf(address_book->fp, "%s,%s,%s\n", 
-		address_book->list[i].name[0], address_book->list[i].phone_numbers[0]
-		, address_book->list[i].email_addresses[0]);
+		fprintf(address_book->fp, "%s,", address_book->list[i].name);
+		for(int j = 0; j < 5; j++){
+			fprintf(address_book->fp, "%s,", address_book->list[i].phone_numbers[j]);
+		}
+		for(int j = 0; j < 5; j++){
+			fprintf(address_book->fp, "%s,", address_book->list[i].email_addresses[j]);
+		}
 	}
 
 	fclose(address_book->fp);
 	return e_success;
 }
+
+/*
+
+fprintf(address_book->fp, "%s,%s,%s\n", 
+		address_book->list[i].name[0], address_book->list[i].phone_numbers[0]
+		, address_book->list[i].email_addresses[0]);
+
+*/
