@@ -19,29 +19,28 @@ void clean_stdin()
 int getUserInt(const char *prompt)
 {
 	int userInput;
-	while (1)
-	{
-		printf("%s", prompt);
-		scanf("%d", &userInput);
-		if (userInput >= 0)
-			return userInput;
-		printf("*Note: No negative number please...\n");
-		clean_stdin();
-	}
+    while(1)
+    {
+        printf("%s",prompt);
+        scanf_s("%d",&userInput);
+        if(userInput >= 0)  return userInput;
+        printf("*Note: Please only enter positive number: ");
+        clean_stdin();
+    }
 }
 
 int getBoundedInt(const char *prompt, int lowBound, int highBound)
 {
 	int userInput;
-	while (1)
-	{
-		userInput = getUserInt(prompt);
-		if (lowBound <= userInput && userInput <= highBound)
-			break;
-		printf("Please enter a value in the range [%d..%d]\n", lowBound, highBound);
-		clean_stdin();
-	}
-	return userInput;
+    while(1)
+    {
+        userInput = getUserInt(prompt);
+        if (lowBound <= userInput && userInput <= highBound)
+            break;
+        printf("Please enter a value in the range [%d..%d]\nPlease select an option: ",lowBound,highBound);
+        clean_stdin();
+    }
+    return userInput;
 }
 
 int get_option(int type, const char *msg)
@@ -55,12 +54,11 @@ int get_option(int type, const char *msg)
 	{
 		do
 		{
-			char userInput;
-			printf("%s", msg);
-			fflush(stdout);
-			scanf("%c", userInput);
 			clean_stdin();
-			switch (userInput)
+			char charInput;
+			printf("%s", msg);
+			scanf_s("%c", &charInput, 1);
+			switch(charInput)
 			{
 			case 'n':
 			case 'N':
@@ -70,6 +68,7 @@ int get_option(int type, const char *msg)
 				return 'Y';
 			}
 			printf("Please select Y or N\n");
+			fflush(stdout);
 		} while (1);
 	}
 	return NONE;
@@ -114,14 +113,22 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("cls");
-	//system("clear");
+	//system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
 	{
 		printf("#######  %s\n", str);
 	}
+}
+
+void printList(AddressBook *address_book){
+    printf("PRINTING LIST\n");
+    for(int i = 0; i < address_book->count; i++){
+        printf("name: %s, number: %s, email: %s\n", address_book->list[i].name[0], 
+        address_book->list[i].phone_numbers[0],address_book->list[i].email_addresses[0]);
+    }
+    printf("\nLIST COMPLETE");
 }
 
 void main_menu(void)
@@ -150,7 +157,6 @@ Status menu(AddressBook *address_book)
 		main_menu();
 
 		option = get_option(NUM, "");
-
 		if ((address_book->count == 0) && (option != e_add_contact))
 		{
 			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts");
@@ -264,36 +270,14 @@ Status add_contacts(AddressBook *address_book)
 		printf("2. Phone No 1 : %s\n", newPerson.phone_numbers[0]);
 		printf("3. Email ID 1 : %s\n", newPerson.email_addresses[0]);
 
-	} while (user_opt != e_exit);
+	} while (user_opt != 0);
+	printf("THIS IS THE CURRENT COUNT: %d", address_book->count);
+	
+	newPerson.si_no = address_book->count;
 
-	address_book->list[tempIndex] = &newPerson; //update latest contact in list
-	//address_book->list[tempIndex] = newPerson; 	//what it should be after malloc works
-
-	/*
-	//for debug purposes
-
-	//check that each one was updated
-	printf("\nUser inputted:\nname: %s\n", address_book->list[tempIndex]->name[0]);
-	printf("phone number: %s\n", address_book->list[tempIndex]->phone_numbers[0]);
-	printf("e-mail: %s\n", address_book->list[tempIndex]->email_addresses[0]);
-	*/
-
-	//add new person to file
-
-	fprintf(address_book->fp, "%s", newPerson.name);
-	fprintf(address_book->fp, "%c", FIELD_DELIMITER);
-
-	fprintf(address_book->fp, "%s", newPerson.phone_numbers[0]);
-	fprintf(address_book->fp, "%c", FIELD_DELIMITER);
-
-	fprintf(address_book->fp, "%s", newPerson.email_addresses[0]);
-	fprintf(address_book->fp, "%c", FIELD_DELIMITER);
-
-	fprintf(address_book->fp, "%c", NEXT_ENTRY);
-
-	printf("\nSuccessfully updated file!\n");
-
-	return e_success;
+	address_book->list[address_book->count] = newPerson;	//update latest contact in list
+	address_book->count += 1;	//another contact added, increment address book size
+	printList(address_book);
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
