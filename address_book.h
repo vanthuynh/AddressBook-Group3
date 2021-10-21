@@ -76,7 +76,7 @@ typedef struct
 typedef struct
 {
 	FILE *fp;
-	ContactInfo *list[LIST_MAX];
+	ContactInfo *list;
 	int count;	
 } AddressBook;
 
