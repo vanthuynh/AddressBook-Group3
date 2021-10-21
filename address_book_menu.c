@@ -117,6 +117,15 @@ void menu_header(const char *str)
 	}
 }
 
+void printList(AddressBook *address_book){
+    printf("PRINTING LIST\n");
+    for(int i = 0; i < address_book->count; i++){
+        printf("name: %s, number: %s, email: %s\n", address_book->list[i].name[0], 
+        address_book->list[i].phone_numbers[0],address_book->list[i].email_addresses[0]);
+    }
+    printf("\nLIST COMPLETE");
+}
+
 void main_menu(void)
 {
 	menu_header("Features:\n");
@@ -225,13 +234,13 @@ Status add_contacts(AddressBook *address_book)
 		printf("3. Email ID 1 : %s\n", newPerson.email_addresses[0]);
 
 	} while (user_opt != 0);
-
-	address_book->count += 1;	//another contact added, increment address book size
+	printf("THIS IS THE CURRENT COUNT: %d", address_book->count);
+	
 	newPerson.si_no = address_book->count;
 
 	address_book->list[address_book->count] = newPerson;	//update latest contact in list
-
-	
+	address_book->count += 1;	//another contact added, increment address book size
+	printList(address_book);
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)

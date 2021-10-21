@@ -15,6 +15,26 @@ bool fileExists(char *fileName){
 	return(stat(fileName, &buffer) == 0);
 }
 
+void AdBookInit(AddressBook *address_book, int counter){
+    if(address_book == NULL){
+        printf("address book is null\n");
+        return;
+    }
+    //address_book->count = counter;
+    address_book->list = (ContactInfo*)calloc(counter, sizeof(ContactInfo));
+    printf("finished malloc\n");
+}
+
+// void printList(AddressBook *address_book){
+//     printf("PRINTING LIST\n");
+//     for(int i = 0; i < address_book->count; i++){
+//         printf("name: %s, number: %s, email: %s\n", address_book->list[i].name[0], 
+//         address_book->list[i].phone_numbers[0],address_book->list[i].email_addresses[0]);
+//     }
+//     printf("\nLIST COMPLETE");
+// }
+
+
 Status load_file(AddressBook *address_book)
 {
 	int ret = 1;
@@ -34,13 +54,14 @@ Status load_file(AddressBook *address_book)
 		 * Do error handling
 		 */ 
 		address_book->fp = fopen(DEFAULT_FILE, "a+");
+		AdBookInit(address_book, 100);
 		if(address_book-> fp == NULL){
 			perror("Unable to open file");
 			exit(1);
 		}
+
 		char line[1024];
 		int x = 0;
-		//printf("this is count: %d\n", ab);
 		while(fgets(line,sizeof(line), address_book->fp)){
 			char * token;
 			token = strtok(line, ",");
@@ -53,15 +74,11 @@ Status load_file(AddressBook *address_book)
 				strcpy(newPerson.email_addresses[0], token);
 				token = strtok(NULL, ",");
 			}
-			 printf("Name: %s ", newPerson.name[0]);
-			 printf("Number: %s ", newPerson.phone_numbers[0]);
-			 printf("Email: %s \n", newPerson.email_addresses[0]);
-			//put newPerson into address_book->list
-			//address_book->list[x] = newPerson;
+			address_book->list[x] = newPerson;
 			x++;
 		}
-		//printf("file exist");
-		//printf("HELLO %s", address_book->list->si_no);
+		address_book->count = x;
+		//printList(address_book);
 	}
 	else
 	{
