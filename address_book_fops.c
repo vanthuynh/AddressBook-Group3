@@ -54,6 +54,7 @@ Status load_file(AddressBook *address_book)
 			newPerson.si_no = (x+1);
 			address_book->list[x] = newPerson;
 			x++;
+			//printf("THIS IS X: %d\n", x);
 		}
 		address_book->count = x;
 	}
