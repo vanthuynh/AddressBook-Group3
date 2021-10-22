@@ -274,7 +274,7 @@ Status add_contacts(AddressBook *address_book)
 		printf("3. Email ID 1 : %s\n", newPerson.email_addresses[0]);
 
 	} while (user_opt != 0);
-	printf("THIS IS THE CURRENT COUNT: %d", address_book->count);
+	//printf("THIS IS THE CURRENT COUNT: %d", address_book->count);
 
 	newPerson.si_no = address_book->count;
 
@@ -388,7 +388,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 	}
 
 	//if e_delete, return to delete_contact
-	if (mode == e_delete && printSwitch == 0)
+	if (mode == e_delete || mode == e_edit && printSwitch == 0)
 		return e_fail;
 	else
 		return e_success;
@@ -519,6 +519,150 @@ Status search_contact(AddressBook *address_book)
 Status edit_contact(AddressBook *address_book)
 {
 	/* Add the functionality for edit contacts here */
+	//option number for name,phone,email,si no
+	int user_opt, index, user_si_no;
+
+	//counts 
+
+	// input from user has length of 32, prompt user for respective input
+	char input[32], tempStr[32];
+	char valid, selection;
+
+	ContactInfo editPerson; //Declare temp new contact
+
+	char *msg = ":======:==================================:==================================:==================================:\n:"
+					": S.No : Name                             : Phone No                         : Email                            :\n:"
+					":======:==================================:==================================:==================================:\n"
+					":      :                                  :                                  :                                  :\n:"
+					":      :                                  :                                  :                                  :\n:"
+					":      :                                  :                                  :                                  :\n:";
+
+	menu_header("Search Contact to Edit by:\n"); //Display header for "Add Contact"
+
+	//Display menu options
+	printf("0. Exit\n");
+	printf("1. Name		\n");
+	printf("2. Phone No	\n");
+	printf("3. Email ID	\n");
+	printf("4. Serial No	\n");
+
+	user_opt = getBoundedInt("Please select an option: ", 0, 4);
+
+	switch (user_opt)
+	{
+	case 0:
+		break; //exit
+	case 1:
+		printf("Enter the name: ");
+		scanf("%s", input);
+
+		if (search(input, address_book, address_book->count, 1, msg, e_edit) != e_success)
+		{
+			printf("Contact not found!\nReturning to menu.\n\n");
+			return e_fail;
+		}
+
+		break;
+	case 2:
+		printf("Enter Phone Number: ");
+		scanf("%s", input);
+
+		if (search(input, address_book, address_book->count, 2, msg, e_edit) != e_success)
+		{
+			printf("Contact not found!\nReturning to menu.\n\n");
+			return e_fail;
+		}
+
+		break;
+	case 3:
+		printf("Enter Email ID: ");
+		scanf("%s", input);
+
+		if (search(input, address_book, address_book->count, 3, msg, e_edit) != e_success)
+		{
+			printf("Contact not found!\nReturning to menu.\n\n");
+			return e_fail;
+		}
+
+		break;
+	case 4:
+		printf("Enter Serial No: ");
+		scanf("%s", input);
+
+		if (search(input, address_book, address_book->count, 4, msg, e_edit) != e_success)
+		{
+			printf("Contact not found!\nReturning to menu.\n\n");
+			return e_fail;
+		}
+
+		break;
+	}
+
+	selection = getChar("\nPress: [s] = Select, [q] | Cancel: ");
+
+	if (selection == 's')
+	{
+		user_si_no = getUserInt("Select a Serial Number (S.No) to Edit: ");
+
+		// assign editPerson to corresponding serial number
+		editPerson = address_book->list[user_si_no - 1];
+		do
+		{
+
+			//display editPerson
+			menu_header("Edit Contact:\n");
+
+			printf("0. Exit\n");
+			printf("1. Name\t\t  : %s\n", editPerson.name[0]);
+
+			printf("2. Phone No\t1 : %s\n", editPerson.phone_numbers[0]);
+
+			//if more than one phone numbers, print them with for loop
+
+			printf("3. Email ID\t1 : %s\n", editPerson.email_addresses[0]);
+
+			//if more than one email, print them with for loop
+
+			user_opt = getBoundedInt("Please select an option: ", 0, 4);
+			switch (user_opt)
+			{
+			case 0:
+				break; //exit
+			case 1:
+				printf("Enter the name: ");
+				scanf("%s", tempStr);
+				strcpy(editPerson.name[0], tempStr);
+				break;
+			case 2:
+				//ask user which index to change
+				index = getBoundedInt("Enter Phone Number index to be changed [Max 5]: ", 1, 5);
+
+				//ask user to fill selected index
+				printf("Enter Phone Number %d: [Just enter removes the entry]:", index);
+				scanf("%s", tempStr);
+				strcpy(editPerson.phone_numbers[index - 1], tempStr);
+
+				break;
+			case 3:
+				index = getBoundedInt("Enter Email index to be changed [Max 5]: ", 1, 5);
+
+				//ask user to fill selected index
+				printf("Enter Email %d: [Just enter removes the entry]:", index);
+				scanf("%s", tempStr);
+				strcpy(editPerson.email_addresses[index - 1], tempStr);
+
+				break;
+			}
+		} while (user_opt != 0);
+	}
+
+	address_book->list[user_si_no - 1] = editPerson; //update contact
+
+	printf("\nContact has been updated!\n");
+	//if more than one email or phone# entered it does not show in file
+	//debug/implement that next
+
+	return e_success;
 }
 
 Status delete_contact(AddressBook *address_book)
@@ -589,7 +733,7 @@ Status delete_contact(AddressBook *address_book)
 		printf("Enter Email ID: ");
 		scanf("%s", deletePerson.email_addresses[0]);
 
-		if (search(deletePerson.email_addresses[0], address_book, address_book->count, 3, msg, e_delete) != e_success) 
+		if (search(deletePerson.email_addresses[0], address_book, address_book->count, 3, msg, e_delete) != e_success)
 		{
 			printf("Contact not found!\nReturning to menu.\n\n");
 			return e_fail;
@@ -632,7 +776,7 @@ Status delete_contact(AddressBook *address_book)
 			address_book->list[user_si_no - 1] = emptyPerson;
 
 			// address_book->count--; //accidently gets rid of last contact?
-			//printList(address_book);	
+			//printList(address_book);
 
 			//double check file and list were reassigned or mutated correctly
 		}
