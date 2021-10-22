@@ -524,8 +524,8 @@ Status edit_contact(AddressBook *address_book)
 Status delete_contact(AddressBook *address_book)
 {
 	/* Add the functionality for delete contacts here */
-	char valid, selection, *str_si_no;
-	//char input[32];
+	char valid, selection;
+	char input[32];
 	int user_opt;
 
 	//change deleperson into general input?
@@ -597,17 +597,10 @@ Status delete_contact(AddressBook *address_book)
 		break;
 	case 4:
 		printf("Enter Serial Number: ");
-		scanf("%s", &str_si_no);
-		printf("\nEntered si no\n");
+		scanf("%s", input);
 
-		//itoa(temp_si_no, str_si_no, 10);
-
-		//sprintf(str_si_no, "%d", &deletePerson.si_no);
-		printf("\n2 Entered si no \n");
-
-		if (search(str_si_no, address_book, address_book->count, 4, msg, e_delete) != e_success)
+		if (search(input, address_book, address_book->count, 4, msg, e_delete) != e_success)
 		{
-			printf("\nin if\n ");
 			printf("Contact not found!\nReturning to menu.\n\n");
 			return e_fail;
 		}
@@ -639,8 +632,7 @@ Status delete_contact(AddressBook *address_book)
 			address_book->list[user_si_no - 1] = emptyPerson;
 
 			// address_book->count--; //accidently gets rid of last contact?
-			printf("\nUpdated count: %d\n", address_book->count);
-			printList(address_book);
+			//printList(address_book);	
 
 			//double check file and list were reassigned or mutated correctly
 		}
