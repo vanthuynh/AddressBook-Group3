@@ -296,14 +296,216 @@ Status add_contacts(AddressBook* address_book)
 	printList(address_book);
 }
 
-Status search(const char* str, AddressBook* address_book, int loop_count, int field, const char* msg, Modes mode)
+Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	/* Add the functionality for adding contacts here */
-}
+	// add do loop? for exiting search
+	// gcc address_book_fops.c address_book_menu.c main.c -o calc
+	int counter = 0;
+	char option;
 
-Status search_contact(AddressBook* address_book)
+	
+	menu_header("Search result:\n\n");
+	printf("============================================================================================================\n");
+		// printf("%0*d\n", 80, 0);
+		// printf(": S. No : Name                            : Phone No                        : Email ID                     :\n");
+		printf(": %*s : %*s : %*s : %*s\n", -2, "S. No", -40, "Name", -40, "Phone No", -40, "Email Id");
+		printf("============================================================================================================\n");
+
+	switch(field){
+		case e_no_opt: 
+			break;
+		case 1:
+		for(int i = 0; i < address_book->count ; i++){
+			ContactInfo *personfound = &address_book->list[i];
+			for (int name = 0; name < 1; name++){
+			if(strcasecmp(personfound->name[name], str) == 0){
+				
+				// serial no, name, phone, email
+				printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[i].si_no, -40, address_book->list[i].name, -40, address_book->list[i].phone_numbers, -40, address_book->list[i].email_addresses);
+				counter++;
+				printf("============================================================================================================\n");
+				}
+			}
+		}
+		break;
+	
+		case 2:
+		
+		for(int i = 0; i < address_book->count ; i++){
+			
+			ContactInfo *personfound = &address_book->list[i];
+			for (int phone = 0; phone < 1; phone++){
+			if(strcasecmp(personfound->phone_numbers[phone], str) == 0){
+				
+				// serial no, name, phone, email
+				printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[i].si_no, -40, address_book->list[i].name, -40, address_book->list[i].phone_numbers, -40, address_book->list[i].email_addresses);
+				counter++;
+				printf("============================================================================================================\n");
+				}
+			}
+			
+		}
+		
+		break;
+
+		case 3:
+		
+		for(int i = 0; i < address_book->count  ; i++){
+			ContactInfo *personfound = &address_book->list[i];
+			for (int email = 0; email < 1; email++){
+			if(strcasecmp(personfound->email_addresses[email], str) == 0){
+				
+				// serial no, name, phone, email
+				printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[i].si_no, -40, address_book->list[i].name, -40, address_book->list[i].phone_numbers, -40, address_book->list[i].email_addresses);
+				counter++;
+				printf("::===============================================================================================================:\n");
+				}
+			}
+		}
+		
+		break;
+
+		case 4:
+		for(int i = 0; i < address_book->count  ; i++){
+			ContactInfo *personfound = &address_book->list[i];
+			//for (int serial = 0; serial < 1; serial++){
+			if(personfound->si_no == atoi(str)){
+				
+				// serial no, name, phone, email
+				printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[i].si_no, -40, address_book->list[i].name, -40, address_book->list[i].phone_numbers, -40, address_book->list[i].email_addresses);
+				counter++;
+				printf("::===============================================================================================================:\n");
+				}
+			//}
+		}
+	
+		break;
+
+		default:
+		break;
+	}
+
+	char quit;
+	while(toupper(quit) != 'Q'){
+		printf("Press: [q] | Cancel:  ");
+		quit = getchar();
+	}
+	
+	return e_success;
+	}
+	
+
+
+
+Status search_contact(AddressBook *address_book)
 {
-	/* Add the functionality for search contacts here */
+	// uses contact info struct to set person_found as a pointer
+	ContactInfo *person_found = address_book->list;
+
+	// input from user has length of 32
+	char input[32]; 
+
+	// declare user options 
+	int user_opt;
+
+	
+	
+
+	
+	//want to shorten this instead of long print statement	
+	char *msg = ":======:==================================:==================================:==================================:\n:" 
+				": S.No : Name                             : Phone No                         : Email                            :\n:"
+				":======:==================================:==================================:==================================:\n"
+				":      :                                  :                                  :                                  :\n:"
+				":      :                                  :                                  :                                  :\n:"
+				":      :                                  :                                  :                                  :\n:";
+
+	// Displays menu options
+	menu_header("Search contact by: \n");
+
+	printf("0. Back\n");
+	printf("1. Name\n");
+	printf("2. Phone No\n");
+	printf("3. Email ID\n");
+	printf("4. Serial No\n");
+
+	// do loop allows for user to search until case '0' (e_no_opt) is selected
+	do {
+		
+		// user opt calls getbounded function to set options from 0 - 4, will return invalid response if out of bounds
+		user_opt = getBoundedInt("\nPlease select an option: ", 0, 100);
+
+		// switch statement based on bounds
+		switch (user_opt) {
+
+		// RETURN TO MAIN MENU
+		case e_no_opt: 
+			break;
+		// FIND NAME
+		case 1:
+			printf("Please enter the name: ");
+
+			// clears input buffer
+			clean_stdin();
+
+			// reads input from user, must not exceed 32 characters
+			// use %[^\n]%*c to allow user to use both spaces for first/last name, or just first name
+			scanf("%[^\n]%*c", input);
+			if (search(input, address_book, address_book->count, 1, msg, e_search) == e_success) {
+						return search(input, address_book, address_book->count, 1, msg, e_search);
+			} 
+			
+			// NAME FOUND
+			
+			break;
+
+		// FIND PHONE NUMBER	
+		case 2: 
+			printf("Please enter the phone number: ");
+
+			// clears input buffer
+			clean_stdin();
+
+			// reads input from user, must not exceed 32 characters
+			scanf("%s", input);
+			if (search(input, address_book, address_book->count, 2, msg, e_search) == e_success) {
+						return search(input, address_book, address_book->count, 2, msg, e_search);
+			}
+				// PHONE NUMBER FOUND
+				
+			break;
+		// FIND EMAIL	
+		case 3: 
+			printf("Please enter the email ID: ");
+
+			// clears input buffer
+			clean_stdin();
+
+			// reads input from user, must not exceed 32 characters
+			scanf("%s", input);
+			if (search(input, address_book, address_book->count, 3, msg, e_search) == e_success) {
+						return search(input, address_book, address_book->count, 3, msg, e_search);
+			}
+				// EMAIL FOUND
+				
+			break;
+		// FIND SERIAL NUMBER | refers to the index the contact info is stored at
+		case 4: 
+			printf("Please enter the serial number: ");
+
+			// clears input buffer
+			clean_stdin();
+
+			// reads input from user, must not exceed 32 characters
+			scanf("%s", input);
+			if (search(input, address_book, address_book->count, 4, msg, e_search) == e_success) {
+						return search(input, address_book, address_book->count, 4, msg, e_search);
+			}
+				// SERIAL NUMBER FOUND
+				
+			break;
+		}
+	} while (user_opt != e_exit);
 }
 
 Status edit_contact(AddressBook* address_book)
