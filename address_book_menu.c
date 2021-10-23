@@ -46,7 +46,7 @@ int get_option(int type, const char *msg)
 {
 	if (type == NUM)
 	{
-		int userInput = getBoundedInt(msg, 0, 6);
+		int userInput = getBoundedInt(msg, NONE, MAX_DEFAULT_MENU_CHOICE);
 		return userInput;
 	}
 	else if (type == CHAR)
@@ -113,31 +113,57 @@ Status save_prompt(AddressBook *address_book)
 	return e_success;
 }
 
+void output_header()
+{
+	printf("============================================================================================================\n");
+	printf(": %*s : %*s : %*s : %*s\n", -5, "S. No", -35, "Name", -35, "Phone No", -35, "Email Id");
+	printf("============================================================================================================\n");
+	fflush(stdout);
+}
+
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
 {
-	/*
-	 * Add code to list all the contacts availabe in address_book.csv file
-	 * Should be menu based
-	 * The menu provide navigation option if the entries increase the page size
-	 */
 	int counter = 0;
 	char option;
 	do
 	{
 		menu_header(title);
-		printf("============================================================================================================\n");
-		// printf("%0*d\n", 80, 0);
-		// printf(": S. No : Name                            : Phone No                        : Email ID                     :\n");
-		printf(": %*s : %*s : %*s : %*s\n", -2, "S. No", -40, "Name", -40, "Phone No", -40, "Email Id");
-		printf("============================================================================================================\n");
+		output_header();
+		//print each section spaced out correctly
 		for (int i = 0; i < mode; i++)
 		{
-			//print each section spaced out correctly
-			printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[counter].si_no, -40, address_book->list[counter].name[0], -40, address_book->list[counter].phone_numbers[0], -40, address_book->list[counter].email_addresses[0]);
+			printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[counter].si_no, -35, address_book->list[counter].name[0], -35, address_book->list[counter].phone_numbers[0], -35, address_book->list[counter].email_addresses[0]);
 			counter++;
 		}
 		printf("============================================================================================================\n");
-		option = getChar(msg);
+		while (1)
+		{
+			option = getChar(msg);
+			switch (option)
+			{
+			case 'q':
+			case 'Q':
+				break;
+			case 'p':
+				if (counter - 10 >= 0)
+				{
+					counter -= 10;
+					break;
+				}
+			case 'n':
+			case 'N':
+				if (counter == address_book->count)
+				{
+					printf("%s", "No more contact to show...\n");
+					continue;
+				}
+				break;
+			default:
+				continue;
+			}
+			break;
+		}
+
 	} while (toupper(option) != 'Q' && counter <= address_book->count);
 	return e_success;
 }
@@ -215,7 +241,7 @@ Status menu(AddressBook *address_book)
 			delete_contact(address_book);
 			break;
 		case e_list_contacts:
-			list_contacts(address_book, "Search Result:\n", 0, "Press [q]-Cancel | [n]-Next Page | [p]-Previous Page: ", e_list);
+			list_contacts(address_book, "Search Result:\n", 0, "Press [q]-Cancel | [n]-Next Page | [p]-Previous Page: ", WINDOW_SIZE);
 			break;
 			/* Add your implementation to call list_contacts function here */
 		case e_save:
@@ -234,6 +260,14 @@ Status add_contacts(AddressBook *address_book)
 	/* Add the functionality for adding contacts here */
 	int user_opt;
 	ContactInfo newPerson; //Declare temp new contact
+
+	//Initialize newPerson fields with empty space
+	strcpy(newPerson.name[0], " ");
+	for (int i = 0; i < 5; i++)
+	{
+		strcpy(newPerson.phone_numbers[i], " ");
+		strcpy(newPerson.email_addresses[i], " ");
+	}
 
 	menu_header("Add Contact:\n"); //Display header for "Add Contact"
 
@@ -276,18 +310,18 @@ Status add_contacts(AddressBook *address_book)
 	} while (user_opt != 0);
 	//printf("THIS IS THE CURRENT COUNT: %d", address_book->count);
 
-	newPerson.si_no = address_book->count;
+	newPerson.si_no = address_book->count + 1;
 
 	address_book->list[address_book->count] = newPerson; //update latest contact in list
 	address_book->count += 1;									  //another contact added, increment address book size
-	printList(address_book);
+																		  //printList(address_book);
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
 	// add do loop? for exiting search
 	// gcc address_book_fops.c address_book_menu.c main.c -o calc
-	int printSwitch = 0; //use for delete, 0=nothing found, 1=found something
+	int printSwitch = 0; //use for delete and edit mode, 0=nothing found, 1=found something
 	int counter = 0;
 	char option;
 
@@ -388,8 +422,8 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 	}
 
 	//if e_delete, return to delete_contact
-	if (mode == e_delete || mode == e_edit && printSwitch == 0)
-		return e_fail;
+	if ((mode == e_delete || mode == e_edit) && printSwitch == 0)
+		return e_no_match;
 	else
 		return e_success;
 
@@ -455,9 +489,11 @@ Status search_contact(AddressBook *address_book)
 			// reads input from user, must not exceed 32 characters
 			// use %[^\n]%*c to allow user to use both spaces for first/last name, or just first name
 			scanf("%[^\n]%*c", input);
-			if (search(input, address_book, address_book->count, 1, msg, e_search) == e_success)
+			if (search(input, address_book, address_book->count, 1, msg, e_search) != e_success)
 			{
-				return search(input, address_book, address_book->count, 1, msg, e_search);
+				printf("\nContact not found.\n");
+				return e_no_match;
+				//return search(input, address_book, address_book->count, 1, msg, e_search);
 			}
 
 			// NAME FOUND
@@ -522,7 +558,7 @@ Status edit_contact(AddressBook *address_book)
 	//option number for name,phone,email,si no
 	int user_opt, index, user_si_no;
 
-	//counts 
+	//counts
 
 	// input from user has length of 32, prompt user for respective input
 	char input[32], tempStr[32];
@@ -674,16 +710,23 @@ Status delete_contact(AddressBook *address_book)
 
 	//change deleperson into general input?
 	ContactInfo deletePerson; //Declare temp new contact
-	ContactInfo emptyPerson;
+	ContactInfo emptyPerson, lastPerson;
 
 	//initialize each variable to empty string
 	strcpy(deletePerson.name[0], " ");
-	strcpy(deletePerson.phone_numbers[0], " ");
-	strcpy(deletePerson.email_addresses[0], " ");
-
 	strcpy(emptyPerson.name[0], " ");
-	strcpy(emptyPerson.phone_numbers[0], " ");
-	strcpy(emptyPerson.email_addresses[0], " ");
+
+	for (int i = 0; i < 5; i++)
+	{
+		strcpy(deletePerson.phone_numbers[i], " ");
+		strcpy(deletePerson.email_addresses[i], " ");
+
+		strcpy(emptyPerson.phone_numbers[i], " ");
+		strcpy(emptyPerson.email_addresses[i], " ");
+
+		strcpy(lastPerson.phone_numbers[i], " ");
+		strcpy(lastPerson.phone_numbers[i], " ");
+	}
 
 	char *msg = ":======:==================================:==================================:==================================:\n:"
 					": S.No : Name                             : Phone No                         : Email                            :\n:"
@@ -706,7 +749,7 @@ Status delete_contact(AddressBook *address_book)
 	switch (user_opt)
 	{
 	case e_no_opt:
-		return e_back;
+		return e_success;
 	case 1:
 		printf("Enter the Name: ");
 		scanf("%s", deletePerson.name[0]); //take in user search parameter
@@ -772,13 +815,17 @@ Status delete_contact(AddressBook *address_book)
 		if (valid == 'Y' || valid == 'y')
 		{
 
-			emptyPerson.si_no = user_si_no;
-			address_book->list[user_si_no - 1] = emptyPerson;
+			//assign last contact to lastPerson
+			lastPerson = address_book->list[address_book->count - 1];
+			lastPerson.si_no = user_si_no;
 
-			// address_book->count--; //accidently gets rid of last contact?
-			//printList(address_book);
+			//move to contact thatll be deleted
+			address_book->list[user_si_no - 1] = lastPerson;
 
-			//double check file and list were reassigned or mutated correctly
+			emptyPerson.si_no = 0;
+			address_book->list[address_book->count - 1] = emptyPerson;
+
+			address_book->count--;
 		}
 
 		//if anyother key entered, DONT delete selected contact
