@@ -268,6 +268,7 @@ Status add_contacts(AddressBook *address_book)
 		strcpy(newPerson.phone_numbers[i], " ");
 		strcpy(newPerson.email_addresses[i], " ");
 	}
+	strcpy(newPerson.email_addresses[4], " \n");
 
 	menu_header("Add Contact:\n"); //Display header for "Add Contact"
 
@@ -587,6 +588,7 @@ Status edit_contact(AddressBook *address_book)
 	switch (user_opt)
 	{
 	case 0:
+		return e_success;
 		break; //exit
 	case 1:
 		printf("Enter the name: ");
@@ -652,10 +654,18 @@ Status edit_contact(AddressBook *address_book)
 			printf("1. Name\t\t  : %s\n", editPerson.name[0]);
 
 			printf("2. Phone No\t1 : %s\n", editPerson.phone_numbers[0]);
+			for (int i = 1; i < PHONE_NUMBER_COUNT; i++)
+			{
+				printf("\t\t%d : %s\n", i+1, editPerson.phone_numbers[i]);
+			}
 
 			//if more than one phone numbers, print them with for loop
 
 			printf("3. Email ID\t1 : %s\n", editPerson.email_addresses[0]);
+			for (int i = 1; i < PHONE_NUMBER_COUNT; i++)
+			{
+				printf("\t\t%d : %s\n", i+1, editPerson.email_addresses[i]);
+			}
 
 			//if more than one email, print them with for loop
 
@@ -684,8 +694,18 @@ Status edit_contact(AddressBook *address_book)
 
 				//ask user to fill selected index
 				printf("Enter Email %d: [Just enter removes the entry]:", index);
-				scanf("%s", tempStr);
-				strcpy(editPerson.email_addresses[index - 1], tempStr);
+				
+				if (index - 1 == EMAIL_ID_COUNT-1)
+				{
+					scanf("%s", tempStr);
+					strcat(tempStr, "\n");
+					strcpy(editPerson.email_addresses[EMAIL_ID_COUNT - 1], tempStr);
+				}
+				else
+				{
+					scanf("%s", tempStr);
+					strcpy(editPerson.email_addresses[index - 1], tempStr);
+				}
 
 				break;
 			}
