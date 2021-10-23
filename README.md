@@ -12,8 +12,8 @@
 | --------------------   | --------------   |
 | Van Huynh              | implement get_option(), list_contact() |
 | Christopher Tcherkezian| implement search_contacts |
-| Andre Nalbandian       | implement load_file(), save_file()   |
-| Moina Vernon           | implement add_contact() |
+| Andre Nalbandian       | implement load_file(), save_file(), design extra phone number and email feature|
+| Moina Vernon           | implement add_contact(), edit_contact, and delete_contact |
 | Paola Barrera          |                  |    
 - We all helped each other with debugging, gave feedbacks and did our best perfecting the application
 
