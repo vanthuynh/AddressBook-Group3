@@ -176,7 +176,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	//system("cls");
+	system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -351,6 +351,7 @@ Status search(const char* str, AddressBook* address_book, int loop_count, int fi
 													, -35, address_book->list[i].email_addresses);
 					counter++;
 					printf("%.*s\n", 108, line);
+					printSwitch = 1;
 				}
 			}
 		}
@@ -371,6 +372,7 @@ Status search(const char* str, AddressBook* address_book, int loop_count, int fi
 													, -35, address_book->list[i].email_addresses);
 					counter++;
 					printf("%.*s\n", 108, line);
+					printSwitch = 1;
 				}
 			}
 
@@ -392,6 +394,7 @@ Status search(const char* str, AddressBook* address_book, int loop_count, int fi
 													, -35, address_book->list[i].email_addresses);
 					counter++;
 					printf("%.*s\n", 108, line);
+					printSwitch = 1;
 				}
 			}
 		}
