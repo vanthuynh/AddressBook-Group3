@@ -84,7 +84,7 @@ char getChar(const char *prompt)
 		status = scanf_s("%c", &charInput, 1);
 		if (status == 1)
 		{
-			if (tolower(charInput) == 'q' || tolower(charInput) == 'n' || tolower(charInput) == 'p')
+			if (tolower(charInput) == 'q' || tolower(charInput) == 'n' || tolower(charInput) == 'p'|| tolower(charInput) == 's')
 				return tolower(charInput);
 		}
 		printf("%s\n", "Invalid Input, Try again");
@@ -122,7 +122,7 @@ void output_header()
 	fflush(stdout);
 }
 
-Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
+Status list_contacts(AddressBook* address_book, const char* title, int* index, const char* msg, Modes mode)
 {
 	int counter = 0;
 	char option;
@@ -130,13 +130,21 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 	{
 		menu_header(title);
 		output_header();
-		//print each section spaced out correctly
-		for (int i = 0; i < mode; i++)
+		for (int i = 0; i < mode; ++i)
 		{
 			printf(": %*d : %*s : %*s : %*s\n", -5, address_book->list[counter].si_no
 				, -35, address_book->list[counter].name[0]
 				, -35, address_book->list[counter].phone_numbers[0]
 				, -35, address_book->list[counter].email_addresses[0]);
+			for (int extra = 1; extra < PHONE_NUMBER_COUNT; ++extra) // only need to check for 4 extra number
+			{
+				if ((strcmp(address_book->list[counter].email_addresses[extra], " ") != 0) || (strcmp(address_book->list[counter].phone_numbers[extra], " ") != 0)) {
+					printf(": %*s : %*s : %*s : %*s\n", -5, " "
+						, -35, " "
+						, -35, address_book->list[counter].phone_numbers[extra]
+						, -35, address_book->list[counter].email_addresses[extra]);
+				}
+			}
 			counter++;
 		}
 		printf("%.*s\n", 108, line);
@@ -149,6 +157,8 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 				counter -= 10;
 				continue;
 			}
+			printf("\n%s\n", "No previous page to show!!!");
+			counter -= 5;
 			break;
 		case 'n':
 			if (counter >= address_book->count) {
@@ -823,7 +833,7 @@ Status delete_contact(AddressBook* address_book)
 		printf("2. Phone No 1 : %s\n", deletePerson.phone_numbers[0]);
 		printf("3. Email ID 1 : %s\n", deletePerson.email_addresses[0]);
 
-		valid = getChar("\nEnter 'Y' to delete. [Press any key to ignore]: ");
+		valid = get_option(CHAR,"\nEnter 'Y' to delete. [Press any key to ignore]: ");
 		//if y entered, delete selected contact
 		if (valid == 'Y' || valid == 'y')
 		{
