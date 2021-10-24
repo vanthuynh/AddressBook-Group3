@@ -37,12 +37,16 @@ Status load_file(AddressBook *address_book)
 			exit(1);
 		}
 
-		char line[1024];
+		FILE* pointer  = fopen("address_book.csv", "r");
+		char line[500];
 		int x = 0;
-		while(fgets(line,sizeof(line), address_book->fp)){
-			char * token;
-			token = strtok(line, ",");
+		while(fgets(line, sizeof(line), pointer)){
+			char* token2 = strtok(line, "\n");
+        	char *token = strtok(token2, ",");
+			int numCount = 0;
+			int emCount = 0;
 			ContactInfo newPerson;
+<<<<<<< Updated upstream
 			while(token != NULL){
 				strcpy(newPerson.name[0], token);
 				for(int i = 0; i < 5; i++){
@@ -54,12 +58,30 @@ Status load_file(AddressBook *address_book)
 					strcpy(newPerson.email_addresses[i], token);
 				}
             token = strtok(NULL, "\n");
+=======
+			for(int i = 0 ; i <= 10; i++){
+				if(i == 0){
+				strcpy(newPerson.name[0], token); 
+				token = strtok(NULL, ",");
+				}
+				else if (i > 0 && i <= 5){
+					strcpy(newPerson.phone_numbers[numCount], token); 
+					numCount++;
+					token = strtok(NULL, ",");
+				}
+				else if (i > 5){
+					strcpy(newPerson.email_addresses[emCount], token); 
+					emCount++;
+					token = strtok(NULL, ",");
+				}
+>>>>>>> Stashed changes
 			}
 			newPerson.si_no = (x+1);
 			address_book->list[x] = newPerson;
 			x++;
 		}
 		address_book->count = x;
+		//printList(address_book);
 	}
 	else
 	{
@@ -83,7 +105,14 @@ Status save_file(AddressBook *address_book)
 		return e_fail;
 	}
 
+	// for(int i = 0; i < address_book->count; i++){
+	// 	fprintf(address_book->fp, "%s,%s,%s\n", 
+	// 	address_book->list[i].name[0], address_book->list[i].phone_numbers[0]
+	// 	, address_book->list[i].email_addresses[0]);
+	// }
+
 	for(int i = 0; i < address_book->count; i++){
+<<<<<<< Updated upstream
 		fprintf(address_book->fp, "%s,", address_book->list[i].name);
 		for(int j = 0; j < 5; j++){
 			fprintf(address_book->fp, "%s,", address_book->list[i].phone_numbers[j]);
@@ -91,6 +120,16 @@ Status save_file(AddressBook *address_book)
 		for(int j = 0; j < 5; j++){
 			fprintf(address_book->fp, "%s,", address_book->list[i].email_addresses[j]);
 		}
+=======
+		fprintf(address_book->fp, "%s,", address_book->list[i].name[0]);
+		for(int j = 0; j < 5; j++){
+			fprintf(address_book->fp, "%s,", address_book->list[i].phone_numbers[j]);
+		}
+		for(int j = 0; j < 4; j++){
+			fprintf(address_book->fp, "%s,", address_book->list[i].email_addresses[j]);
+		}
+		fprintf(address_book->fp, "%s\n", address_book->list[i].email_addresses[4]);
+>>>>>>> Stashed changes
 	}
 
 	fclose(address_book->fp);
