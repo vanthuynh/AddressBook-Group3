@@ -46,19 +46,6 @@ Status load_file(AddressBook *address_book)
 			int numCount = 0;
 			int emCount = 0;
 			ContactInfo newPerson;
-<<<<<<< Updated upstream
-			while(token != NULL){
-				strcpy(newPerson.name[0], token);
-				for(int i = 0; i < 5; i++){
-					token = strtok(NULL, ",");
-					strcpy(newPerson.phone_numbers[i], token);
-				}
-				for(int i = 0; i < ; i++){
-					token = strtok(NULL, ",");
-					strcpy(newPerson.email_addresses[i], token);
-				}
-            token = strtok(NULL, "\n");
-=======
 			for(int i = 0 ; i <= 10; i++){
 				if(i == 0){
 				strcpy(newPerson.name[0], token); 
@@ -74,7 +61,6 @@ Status load_file(AddressBook *address_book)
 					emCount++;
 					token = strtok(NULL, ",");
 				}
->>>>>>> Stashed changes
 			}
 			newPerson.si_no = (x+1);
 			address_book->list[x] = newPerson;
@@ -112,15 +98,6 @@ Status save_file(AddressBook *address_book)
 	// }
 
 	for(int i = 0; i < address_book->count; i++){
-<<<<<<< Updated upstream
-		fprintf(address_book->fp, "%s,", address_book->list[i].name);
-		for(int j = 0; j < 5; j++){
-			fprintf(address_book->fp, "%s,", address_book->list[i].phone_numbers[j]);
-		}
-		for(int j = 0; j < 5; j++){
-			fprintf(address_book->fp, "%s,", address_book->list[i].email_addresses[j]);
-		}
-=======
 		fprintf(address_book->fp, "%s,", address_book->list[i].name[0]);
 		for(int j = 0; j < 5; j++){
 			fprintf(address_book->fp, "%s,", address_book->list[i].phone_numbers[j]);
@@ -129,17 +106,8 @@ Status save_file(AddressBook *address_book)
 			fprintf(address_book->fp, "%s,", address_book->list[i].email_addresses[j]);
 		}
 		fprintf(address_book->fp, "%s\n", address_book->list[i].email_addresses[4]);
->>>>>>> Stashed changes
 	}
 
 	fclose(address_book->fp);
 	return e_success;
 }
-
-/*
-
-fprintf(address_book->fp, "%s,%s,%s\n", 
-		address_book->list[i].name[0], address_book->list[i].phone_numbers[0]
-		, address_book->list[i].email_addresses[0]);
-
-*/

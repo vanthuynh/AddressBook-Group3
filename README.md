@@ -9,13 +9,13 @@
 
 ### Contribution
 | Name                   |      Task        |
-| --------------------   | -----------      |
-| Van Huynh              |                  |
-| Christopher Tcherkezian|                  |
-| Andre Nalbandian       |                  |
-| Moina Vernon           |                  |
+| --------------------   | --------------   |
+| Van Huynh              | implement get_option(), list_contact() |
+| Christopher Tcherkezian| implement search_contacts |
+| Andre Nalbandian       | implement load_file(), save_file(), design extra phone number and email feature|
+| Moina Vernon           | implement add_contact(), edit_contact, and delete_contact |
 | Paola Barrera          |                  |    
-
+- We all helped each other with debugging, gave feedbacks and did our best perfecting the application
 
 ### Resources
 - The project can be found online -->  [***CLICK HERE***](https://www.emertxe.com/embedded-systems/c-programming/c-projects/address-book-c/?gclid=Cj0KCQjwtMCKBhDAARIsAG-2Eu84R-w7MbNt3VoLKUZqFHlCUHNjOJsFUfUcYHbp0vF25jS9aVlS66YaAn6gEALw_wcB)
@@ -44,7 +44,10 @@ git add .
 git commit -m "I need help on this/I just finished the part"
 git push -u origin <your_name_branch>
 ```
-
+6. Compile command line
+```
+gcc .\main.c .\address_book_fops.c .\address_book_menu.c
+```
 ### Project Overview
 
 ```

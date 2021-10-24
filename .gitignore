@@ -1,2 +1,8 @@
 .vscode/
+<<<<<<< HEAD
 testing/
+=======
+build
+*.pdf
+testing.c/
+>>>>>>> 2580874f62f8d14d9cd2ebdcdeb5bcc95d7e4c18
