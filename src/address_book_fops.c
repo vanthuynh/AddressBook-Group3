@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <stdbool.h>
 
-#include "address_book.h"
+#include "../include/address_book.h"
 bool fileExists(char *fileName){
 	struct stat buffer;
 
