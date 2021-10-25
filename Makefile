@@ -20,3 +20,7 @@ program: src\\address_book_fops.c src\\address_book_menu.c src\\main.c
 
 clean: 
 	rm bin/*.exe
+
+# multiple OS clean
+# clean: 
+# 	$(DELETE)bin$(PATH) *.exe
