@@ -1,7 +1,7 @@
 #ifndef ADDRESS_BOOK_H
 #define ADDRESS_BOOK_H
 
-#define DEFAULT_FILE				"address_book.csv"
+#define DEFAULT_FILE				"../address_book.csv"
 
 /* Length of a contact name  */
 #define NAME_LEN					32

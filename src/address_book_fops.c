@@ -7,10 +7,10 @@
 #include <sys/stat.h>
 #include <stdbool.h>
 
-#include "address_book.h"
+#include "../include/address_book.h"
+
 bool fileExists(char *fileName){
 	struct stat buffer;
-
 	return(stat(fileName, &buffer) == 0);
 }
 
@@ -29,7 +29,7 @@ Status load_file(AddressBook *address_book)
 		ret = 0;
 
 	if (ret == 0)
-	{
+	{	
 		address_book->fp = fopen(DEFAULT_FILE, "a+");
 		AdBookInit(address_book, 100);
 		if(address_book->fp == NULL){
@@ -37,7 +37,7 @@ Status load_file(AddressBook *address_book)
 			exit(1);
 		}
 
-		FILE* pointer  = fopen("address_book.csv", "r");
+		FILE* pointer  = fopen(DEFAULT_FILE, "r");
 		char line[500];
 		int x = 0;
 		while(fgets(line, sizeof(line), pointer)){
